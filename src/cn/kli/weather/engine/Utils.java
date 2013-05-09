@@ -5,6 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import cn.kli.utils.klilog;
+
 import android.content.Context;
 
 public class Utils {

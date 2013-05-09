@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import cn.kli.utils.klilog;
 import cn.kli.weather.engine.City;
 import cn.kli.weather.engine.Utils;
 

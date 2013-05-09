@@ -10,6 +10,8 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
+import cn.kli.utils.klilog;
+
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -24,8 +26,11 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 
-class InternetAccess {
-	private static final boolean DEBUG = false;
+public class InternetAccess {
+	
+	private final static int MSG_INTERNET_RESPONSE = 1;
+	
+	private static Object mRequestLock = new Object();
 	private static final String ENCODE="UTF-8";
 	private static InternetAccess sInstance;
 	private HttpClient mHttpClient;
@@ -33,21 +38,23 @@ class InternetAccess {
 	private String mRespose;
 	
 	private Context mContext;
-	
 	private Handler mHandler = new Handler(Looper.getMainLooper()){
 
 		@Override
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
 			switch(msg.what){
-			case 1:
+			case MSG_INTERNET_RESPONSE:
 				klilog.i("msg get!!!");
-				Bundle bundle = msg.getData();
-				mRespose = bundle.getString("res");
+				mRespose = (String)msg.obj;
 				klilog.i("mRespose: " + mRespose);
 				mRequesting = false;
+				synchronized(mRequestLock){
+					mRequestLock.notifyAll();
+				}
 				break;
 			}
+			
 		}
 		
 	};
@@ -64,114 +71,55 @@ class InternetAccess {
 		return sInstance;
 	}
 	
-	public String request(final String url){
+	synchronized public String request(final String url){
 		final String result;
 		
-		MyReceiver receiver = new MyReceiver();
-		IntentFilter filter = new IntentFilter();
-		filter.addAction("internet_response");
-		mContext.registerReceiver(receiver, filter);
-
 		mRequesting = true;
 		
-		Intent send = new Intent();
-		send.setAction("internet_request");
-		send.putExtra("url", url);
-		mContext.sendBroadcast(send);
+		//request
+		requestByLocalNetwork(url);
 		
-		int retryCount = 20;
-		int i = 0;
-
-		while(mRequesting && i < 20){
-			klilog.i("waiting..");
+		synchronized(mRequestLock){
 			try {
-				Thread.sleep(500);
+				mRequestLock.wait(20*1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			i++;
 		}
-		
-		result = receiver.res;
-		klilog.i("result = "+result);
-		mContext.unregisterReceiver(receiver);
+
+		result = mRespose;
 		return result;
 	}
 	
-	class MyReceiver extends BroadcastReceiver{
-		public String res = null;
+	private void requestByLocalNetwork(final String url) {
+		new Thread(){
 
-		@Override
-		public void onReceive(Context arg0, Intent intent) {
-			klilog.i("response  received");
-			res = intent.getStringExtra("response");
-			mRequesting = false;
-		}
-		
-	}
-	/*
-	synchronized public String request(final String url){
-		String result = null;
-		if(DEBUG){
-			HttpUriRequest req = new HttpGet(url);
-			klilog.i("Internet request: " +url);
-			try {
-				HttpResponse response = mHttpClient.execute(req);
-				if(response.getStatusLine().getStatusCode() == 200){
-					result = EntityUtils.toString(response.getEntity(), ENCODE);
-				}
-			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}else{
-			ComponentName cn = new ComponentName("cn.ingenic.indroidsync", 
-					"cn.ingenic.indroidsync.devicemanager.DeviceLocalService");
-			Intent intent = new Intent();
-			intent.setComponent(cn);
-			ServiceConnection sc = new ServiceConnection(){
-
-				@Override
-				public void onServiceConnected(ComponentName arg0, IBinder service) {
-					Messenger msger = new Messenger(service);
-					Message msg = new Message();
-					Bundle bundle = new Bundle();
-					bundle.putString("url", url);
-					msg.setData(bundle);
-					msg.replyTo = new Messenger(mHandler);
-					try {
-						msger.send(msg);
-						klilog.i("msg send!!!");
-					} catch (RemoteException e) {
-						klilog.e("internet request send error");
-						e.printStackTrace();
+			@Override
+			public void run() {
+				super.run();
+				String result = null;
+				HttpUriRequest req = new HttpGet(url);
+				klilog.i("Internet request: " + url);
+				try {
+					HttpResponse response = mHttpClient.execute(req);
+					if (response.getStatusLine().getStatusCode() == 200) {
+						result = EntityUtils.toString(response.getEntity(), ENCODE);
 					}
+				} catch (ClientProtocolException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 
-				@Override
-				public void onServiceDisconnected(ComponentName arg0) {
-					
-				}
-				
-			};
-			
-			mRequesting = true;
-			
-			if(!mContext.bindService(intent, sc, Context.BIND_AUTO_CREATE)){
-				klilog.e("bind device local service error!!!!");
-				return null;
+				Message msg = mHandler.obtainMessage(MSG_INTERNET_RESPONSE);
+				msg.obj = result;
+				msg.sendToTarget();
 			}
 			
-			while(mRequesting){
-			}
-			
-			result = mRespose;
-			
-		}
-		return result;
-	}*/
+		}.start();
+
+	}
 	
 }

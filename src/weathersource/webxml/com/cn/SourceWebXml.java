@@ -6,6 +6,7 @@ import java.util.List;
 import android.content.Context;
 import android.text.TextUtils;
 
+import cn.kli.utils.klilog;
 import cn.kli.weather.engine.City;
 import cn.kli.weather.engine.WeatherEngine;
 import cn.kli.weather.engine.WeatherSource;

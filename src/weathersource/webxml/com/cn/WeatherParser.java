@@ -64,63 +64,69 @@ public class WeatherParser {
 	
 	public static MyCity parser(MyCity city, String source){
 
-		List<String> infos = new StringArrayXmlParser(source).parser();
-		
-		//get days weather, include today
-		int days = 4;
-		ArrayList<Weather> weatherList = new ArrayList<Weather>();
-		
-		//get the first day calendar
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-		String dateToday = infos.get(NOW).split(" ")[0];
-		Calendar calendar = null;
 		try {
+			List<String> infos = new StringArrayXmlParser(source).parser();
+
+			// get days weather, include today
+			int days = 4;
+			ArrayList<Weather> weatherList = new ArrayList<Weather>();
+
+			// get the first day calendar
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+			String dateToday = infos.get(NOW).split(" ")[0];
+			Calendar calendar = null;
 			Date date = sdf.parse(dateToday);
 			calendar = new GregorianCalendar();
 			calendar.setTime(date);
-		} catch (ParseException e) {
-			return null;
-		}
-		
-		for(int i = 0; i < days; i++){
-			Weather weather = new Weather();
 
-			//calendar
-			Calendar cal = (Calendar) calendar.clone();
-			cal.add(Calendar.DAY_OF_MONTH, i);
-			weather.calendar = cal;
-			
-			//currentTemp
-			if(i == 0){
-				String details = infos.get(WEATHER_DETAIL);
-				int p_end = details.indexOf("℃");
-				int p_start = details.indexOf("气温：")+"气温：".length();
-				weather.currentTemp = details.substring(p_start, p_end);
+			for (int i = 0; i < days; i++) {
+				Weather weather = new Weather();
+
+				// calendar
+				Calendar cal = (Calendar) calendar.clone();
+				cal.add(Calendar.DAY_OF_MONTH, i);
+				weather.calendar = cal;
+
+				// currentTemp
+				if (i == 0) {
+					String details = infos.get(WEATHER_DETAIL);
+					int p_end = details.indexOf("℃");
+					int p_start = details.indexOf("气温：") + "气温：".length();
+					try {
+						weather.currentTemp = details.substring(p_start, p_end);
+					} catch (Exception e) {
+						weather.currentTemp = "??";
+						e.printStackTrace();
+					}
+				}
+
+				// maxTemp;
+				// minTemp;
+				String temps = infos.get(DAYS_WEATHER[i][1]);
+				String[] temp = temps.split("/");
+				weather.minTemp = temp[0].substring(0, temp[0].indexOf("℃"));
+				weather.maxTemp = temp[1].substring(0, temp[1].indexOf("℃"));
+
+				// weather;
+				// String weatherDay = infos.get(DAYS_WEATHER[i][0]);
+				// weather.weather = weatherDay.split(" ")[1];
+
+				// weather pic
+				String pic1 = infos.get(DAYS_WEATHER[i][3]).split("\\.")[0];
+				String pic2 = infos.get(DAYS_WEATHER[i][4]).split("\\.")[0];
+				weather.weather = pic1 + "," + pic2;
+
+				// wind;
+				weather.wind = infos.get(DAYS_WEATHER[i][2]);
+
+				weatherList.add(weather);
 			}
 
-			//maxTemp;
-			//minTemp;
-			String temps = infos.get(DAYS_WEATHER[i][1]);
-			String[] temp = temps.split("/");
-			weather.minTemp = temp[0].substring(0, temp[0].indexOf("℃"));
-			weather.maxTemp = temp[1].substring(0, temp[1].indexOf("℃"));
-			
-			//weather;
-//			String weatherDay = infos.get(DAYS_WEATHER[i][0]);
-//			weather.weather = weatherDay.split(" ")[1];
-			
-			//weather pic
-			String pic1 = infos.get(DAYS_WEATHER[i][3]).split("\\.")[0];
-			String pic2 = infos.get(DAYS_WEATHER[i][4]).split("\\.")[0];
-			weather.weather = pic1+","+pic2;
-			
-			//wind;
-			weather.wind = infos.get(DAYS_WEATHER[i][2]);
-			
-			weatherList.add(weather);
+			city.weather = weatherList;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
-		
-		city.weather = weatherList;
 		
 		return city;
 	}
