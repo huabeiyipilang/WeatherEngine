@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">WeatherEngine</string>
+    
+    <!-- 天气类型 -->
+    <string name="weather_q">晴</string>
+    <string name="weather_dyun">多云</string>
+    <string name="weather_y">阴</string>
+    <string name="weather_zhy">阵雨</string>
+    <string name="weather_lzhy">雷阵雨</string>
+    <string name="weather_lzhybbybb">雷阵雨并伴有冰雹</string>
+    <string name="weather_yjx">雨加雪</string>
+    <string name="weather_xy">小雨</string>
+    <string name="weather_zhongyu">中雨</string>
+    <string name="weather_dy">大雨</string>
+    <string name="weather_by">暴雨</string>
+    <string name="weather_dby">大暴雨</string>
+    <string name="weather_tdby">特大暴雨</string>
+    <string name="weather_zhx">阵雪</string>
+    <string name="weather_xx">小雪</string>
+    <string name="weather_zhongx">中雪</string>
+    <string name="weather_dx">大雪</string>
+    <string name="weather_bx">暴雪</string>
+    <string name="weather_w">雾</string>
+    <string name="weather_dongyu">冻雨</string>
+    <string name="weather_schb">沙尘暴</string>
+    <string name="weather_xyzhy">小雨-中雨</string>
+    <string name="weather_zhydy">中雨-大雨</string>
+    <string name="weather_dyby">大雨-暴雨</string>
+    <string name="weather_bydby">暴雨-大暴雨</string>
+    <string name="weather_dbytdby">大暴雨-特大暴雨</string>
+    <string name="weather_xxzhx">小雪-中雪</string>
+    <string name="weather_zhxdx">中雪-大雪</string>
+    <string name="weather_dxbx">大雪-暴雪</string>
+    <string name="weather_fch">浮尘</string>
+    <string name="weather_ysh">扬沙</string>
+    <string name="weather_qshchb">强沙尘暴</string>
+    <string name="weather_nothing">没有数据</string>
+
+    <string name="error">错误</string>
+    <string name="weather_to">转</string>
+</resources>
