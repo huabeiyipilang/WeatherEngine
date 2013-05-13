@@ -111,7 +111,8 @@ public class WeatherParser {
 
 				// weather;
 				String weatherDay = infos.get(DAYS_WEATHER[i][0]);
-				weather.weather = getWeatherByName(weatherDay.split(" ")[1]);
+				String weatherDetails = weatherDay.split(" ")[1];
+				weather.weather = getWeatherByName(weatherDetails);
 
 				// weather pic
 //				String pic1 = infos.get(DAYS_WEATHER[i][3]).split("\\.")[0];
@@ -135,7 +136,7 @@ public class WeatherParser {
 	
 
 	private static int[] getWeatherByName(String name){
-		String[] names = name.split("ת");
+		String[] names = name.split("转");
 		ArrayList<Integer> nameList = new ArrayList<Integer>();
 		
 		for(String item : names){
