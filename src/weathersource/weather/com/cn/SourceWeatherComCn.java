@@ -34,7 +34,7 @@ public class SourceWeatherComCn implements WeatherSource {
 		mDataProxy = DataProxy.getInstance(mContext);
 		mAccess = InternetAccess.getInstance(mContext);
 		
-		klilog.i("prepared = "+mDataProxy.getDataPrepared()+", mIniting = "+mIniting);
+		klilog.info("prepared = "+mDataProxy.getDataPrepared()+", mIniting = "+mIniting);
 		if(!mDataProxy.getDataPrepared() &&!mIniting){
 			mIniting = true;
 			try {
@@ -70,11 +70,11 @@ public class SourceWeatherComCn implements WeatherSource {
 		String url = CITY_URL.replace("xxx", index);
 		ArrayList<MyCity> cities = new ArrayList<MyCity>();
 		String response = mAccess.request(url);
-		klilog.i("response = "+response);
+		klilog.info("response = "+response);
 		if(!TextUtils.isEmpty(response)){
 			cities = CityParser.parser(response);
 		}else{
-			klilog.i("error respose null");
+			klilog.info("error respose null");
 			throw new NullPointerException();
 		}
 		return cities;
@@ -87,11 +87,11 @@ public class SourceWeatherComCn implements WeatherSource {
 		for(MyCity city : cities){
 			String url = CITY_URL.replace("xxx",city.index);
 			String response = mAccess.request(url);
-			klilog.i("response = "+response);
+			klilog.info("response = "+response);
 			if(!TextUtils.isEmpty(response)){
 				city.code = response.split("\\|")[1];
 			}else{
-				klilog.i("error respose null");
+				klilog.info("error respose null");
 				throw new NullPointerException();
 			}
 		}
@@ -105,12 +105,12 @@ public class SourceWeatherComCn implements WeatherSource {
 		MyCity city = mDataProxy.getCityByIndex(index);
 		String url = WEATHER_URL.replace("xxx", city.code);
 		String response = mAccess.request(url);
-		klilog.i("response = "+response);
+		klilog.info("response = "+response);
 		if(!TextUtils.isEmpty(response)){
 			city = WeatherParser.parser(city, response);
-			klilog.i("finish");
+			klilog.info("finish");
 		}else{
-			klilog.i("error respose null");
+			klilog.info("error respose null");
 			throw new NullPointerException();
 		}
 		return city;

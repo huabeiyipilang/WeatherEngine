@@ -45,9 +45,9 @@ public class InternetAccess {
 			super.handleMessage(msg);
 			switch(msg.what){
 			case MSG_INTERNET_RESPONSE:
-				klilog.i("msg get!!!");
+				klilog.info("msg get!!!");
 				mRespose = (String)msg.obj;
-				klilog.i("mRespose: " + mRespose);
+				klilog.info("mRespose: " + mRespose);
 				mRequesting = false;
 				synchronized(mRequestLock){
 					mRequestLock.notifyAll();
@@ -99,7 +99,7 @@ public class InternetAccess {
 				super.run();
 				String result = null;
 				HttpUriRequest req = new HttpGet(url);
-				klilog.i("Internet request: " + url);
+				klilog.info("Internet request: " + url);
 				try {
 					HttpResponse response = mHttpClient.execute(req);
 					if (response.getStatusLine().getStatusCode() == 200) {

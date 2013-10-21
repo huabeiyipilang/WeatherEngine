@@ -46,7 +46,7 @@ class CityDbHelper extends SQLiteOpenHelper {
 				CITY_NAME + " text,"+
 				CITY_PARENT + " text,"+
 				CITY_INDEX + " text)";
-		klilog.i(createTableCity);
+		klilog.info(createTableCity);
 		db.execSQL(createTableCity);
 		
 	}

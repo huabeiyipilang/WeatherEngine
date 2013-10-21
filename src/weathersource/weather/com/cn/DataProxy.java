@@ -40,7 +40,7 @@ public class DataProxy {
 	
 	
 	public void setDataPrepared(boolean prepared){
-		klilog.i("setDataPrepared: "+prepared);
+		klilog.info("setDataPrepared: "+prepared);
 		Thread.dumpStack();
 		SharedPreferences prefs = mContext.getSharedPreferences(SOURCE, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = prefs.edit();
@@ -56,7 +56,7 @@ public class DataProxy {
 	public boolean getDataPrepared(){
 		SharedPreferences prefs = mContext.getSharedPreferences(SOURCE, Context.MODE_PRIVATE);
 		boolean res = prefs.getBoolean(KEY_HAS_INITED, false);
-		klilog.i("getDataPrepared: "+res);
+		klilog.info("getDataPrepared: "+res);
 		Thread.dumpStack();
 		return res;
 	}

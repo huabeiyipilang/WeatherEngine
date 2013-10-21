@@ -43,7 +43,7 @@ class CityDbHelper extends SQLiteOpenHelper {
 				CITY_INDEX + " text,"+
 				CITY_CODE + " text,"+
 				CITY_LEVEL + " int)";
-		klilog.i(createTableCity);
+		klilog.info(createTableCity);
 		db.execSQL(createTableCity);
 		
 	}

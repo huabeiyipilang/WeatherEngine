@@ -37,7 +37,7 @@ public class SourceWebXml implements WeatherSource {
 		mDataProxy = DataProxy.getInstance(mContext);
 		mAccess = InternetAccess.getInstance(mContext);
 		
-		klilog.i("prepared = "+mDataProxy.getDataPrepared()+", mIniting = "+mIniting);
+		klilog.info("prepared = "+mDataProxy.getDataPrepared()+", mIniting = "+mIniting);
 		if(!mDataProxy.getDataPrepared() &&!mIniting){
 			mIniting = true;
 			try {
@@ -58,11 +58,11 @@ public class SourceWebXml implements WeatherSource {
 	private ArrayList<MyCity> getProvinceList(){
 		ArrayList<MyCity> list = new ArrayList<MyCity>();
 		String response = mAccess.request(PROVINCE_URL);
-		klilog.i("response = "+response);
+		klilog.info("response = "+response);
 		if(!TextUtils.isEmpty(response)){
 			list = CityParser.parser(response);
 		}else{
-			klilog.i("error respose null");
+			klilog.info("error respose null");
 			throw new NullPointerException();
 		}
 		return list;
@@ -71,14 +71,14 @@ public class SourceWebXml implements WeatherSource {
 	private ArrayList<MyCity> saveCityList(String index){
 		ArrayList<MyCity> list = new ArrayList<MyCity>();
 		String response = mAccess.request(CITY_URL+index);
-		klilog.i("response = "+response);
+		klilog.info("response = "+response);
 		if(!TextUtils.isEmpty(response)){
 			list = CityParser.parser(response, index);
 			for(MyCity city : list){
 				mDataProxy.addCity(city);
 			}
 		}else{
-			klilog.i("error respose null");
+			klilog.info("error respose null");
 			throw new NullPointerException();
 		}
 		return list;
@@ -89,10 +89,10 @@ public class SourceWebXml implements WeatherSource {
 		MyCity city = mDataProxy.getCityByIndex(index);
 		String response = mAccess.request(getWeatherUrl(index));
 		if(!TextUtils.isEmpty(response)){
-			klilog.i("response = "+response);
+			klilog.info("response = "+response);
 			WeatherParser.parser(city, response);
 		}else{
-			klilog.i("error respose null");
+			klilog.info("error respose null");
 		}
 		return city;
 	}

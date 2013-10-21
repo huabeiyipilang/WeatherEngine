@@ -20,7 +20,7 @@ public class Utils {
 			return false;
 		}
 		
-		klilog.i("DATABASES_DIR = "+DATABASES_DIR);
+		klilog.info("DATABASES_DIR = "+DATABASES_DIR);
         
         File dir = new File(DATABASES_DIR);  
         if (!dir.exists() || isfored) {  

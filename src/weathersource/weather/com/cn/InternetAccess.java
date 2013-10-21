@@ -35,7 +35,7 @@ class InternetAccess {
 	synchronized public String request(String url){
 		HttpGet get = new HttpGet(url);
 		String result = null;
-		klilog.i("Internet request: " +url);
+		klilog.info("Internet request: " +url);
 		try {
 			HttpResponse response = mHttpClient.execute(get);
 			if(response.getStatusLine().getStatusCode() == 200){
