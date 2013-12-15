@@ -16,71 +16,71 @@ import android.os.Parcelable;
  */
 
 public class Weather implements Parcelable{
-	//Ã»ÓÐÊý¾Ý
+	//Ã»ï¿½ï¿½ï¿½ï¿½ï¿½
 	public final static int W_NO_DATA = 0;
-	//ÇçÌì
+	//ï¿½ï¿½ï¿½ï¿½
 	public final static int W_QING = 1;
-	//¶àÔÆ
+	//ï¿½ï¿½ï¿½ï¿½
 	public final static int W_DUOYUN = 2;
-	//Òõ
+	//ï¿½ï¿½
 	public final static int W_YIN = 3;
-	//ÕóÓê
+	//ï¿½ï¿½ï¿½ï¿½
 	public final static int W_ZHENYU = 4;
-	//À×ÕóÓê
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	public final static int W_LEIZHENYU = 5;
-	//À×ÕóÓê²¢°éÓÐ±ù±¢
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ê²¢ï¿½ï¿½ï¿½Ð±ï¿½
 	public final static int W_LEIZHENYUBINGBANYOUBINGBAO = 6;
-	//Óê¼ÐÑ©
+	//ï¿½ï¿½ï¿½Ñ©
 	public final static int W_YUJIAXUE = 7;
-	//Ð¡Óê
+	//Ð¡ï¿½ï¿½
 	public final static int W_XIAOYU = 8;
-	//ÖÐÓê
+	//ï¿½ï¿½ï¿½ï¿½
 	public final static int W_ZHONGYU = 9;
-	//´óÓê
+	//ï¿½ï¿½ï¿½ï¿½
 	public final static int W_DAYU = 10;
-	//±©Óê
+	//ï¿½ï¿½ï¿½ï¿½
 	public final static int W_BAOYU = 11;
-	//´ó±©Óê
+	//ï¿½ï¿½ï¿½ï¿½
 	public final static int W_DABAOYU = 12;
-	//ÌØ´ó±©Óê
+	//ï¿½Ø´ï¿½ï¿½ï¿½
 	public final static int W_TEDABAOYU = 13;
-	//ÕóÑ©
+	//ï¿½ï¿½Ñ©
 	public final static int W_ZHENXUE = 14;
 	//Ð¡Ñ©
 	public final static int W_XIAOXUE = 15;
-	//ÖÐÑ©
+	//ï¿½ï¿½Ñ©
 	public final static int W_ZHONGXUE = 16;
-	//´óÑ©
+	//ï¿½ï¿½Ñ©
 	public final static int W_DAXUE = 17;
-	//±©Ñ©
+	//ï¿½ï¿½Ñ©
 	public final static int W_BAOXUE = 18;
-	//Îí
+	//ï¿½ï¿½
 	public final static int W_WU = 19;
-	//¶³Óê
+	//ï¿½ï¿½ï¿½ï¿½
 	public final static int W_DONGYU = 20;
-	//É³³¾±©
+	//É³ï¿½ï¿½ï¿½ï¿½
 	public final static int W_SHACHENBAO = 21;
-	//Ð¡Óê-ÖÐÓê
+	//Ð¡ï¿½ï¿½-ï¿½ï¿½ï¿½ï¿½
 	public final static int W_XIAOYUZHONGYU = 22;
-	//ÖÐÓê-´óÓê
+	//ï¿½ï¿½ï¿½ï¿½-ï¿½ï¿½ï¿½ï¿½
 	public final static int W_ZHONGYUDAYU = 23;
-	//´óÓê-±©Óê
+	//ï¿½ï¿½ï¿½ï¿½-ï¿½ï¿½ï¿½ï¿½
 	public final static int W_DAYUBAOYU = 24;
-	//±©Óê-´ó±©Óê
+	//ï¿½ï¿½ï¿½ï¿½-ï¿½ï¿½ï¿½ï¿½
 	public final static int W_BAOYUDABAOYU = 25;
-	//´ó±©Óê-ÌØ´ó±©Óê
+	//ï¿½ï¿½ï¿½ï¿½-ï¿½Ø´ï¿½ï¿½ï¿½
 	public final static int W_DABAOYUTEDABAOYU = 26;
-	//Ð¡Ñ©-ÖÐÑ©
+	//Ð¡Ñ©-ï¿½ï¿½Ñ©
 	public final static int W_XIAOXUEZHONGXUE = 27;
-	//ÖÐÑ©-´óÑ©
+	//ï¿½ï¿½Ñ©-ï¿½ï¿½Ñ©
 	public final static int W_ZHONGXUEDAXUE = 28;
-	//´óÑ©-±©Ñ©
+	//ï¿½ï¿½Ñ©-ï¿½ï¿½Ñ©
 	public final static int W_DAXUEBAOXUE = 29;
-	//¸¡³¾
+	//ï¿½ï¿½ï¿½ï¿½
 	public final static int W_FUCHEN = 30;
-	//ÑïÉ³
+	//ï¿½ï¿½É³
 	public final static int W_YANGSHA = 31;
-	//Ç¿É³³¾±©
+	//Ç¿É³ï¿½ï¿½ï¿½ï¿½
 	public final static int W_QIANGSHACHENBAO = 32;
 	
 	public Calendar calendar;
@@ -96,10 +96,6 @@ public class Weather implements Parcelable{
 	
 	public int getIcon(){
 		return WeatherUtils.getDrawable(weather);
-	}
-	
-	public boolean isBadWeather(){
-		return WeatherUtils.isBadWeather(this);
 	}
 	
 	@Override
@@ -196,7 +192,7 @@ public class Weather implements Parcelable{
 	
 	public String toString(){
 		try {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyyÄêMMÔÂddÈÕ");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			return "calendar:" + sdf.format(calendar.getTime()) + "; currentTemp:"
 					+ currentTemp + "; " + "maxTemp:" + maxTemp + "; "
 					+ "minTemp:" + minTemp + "; " + "weather:" + weather + "; "

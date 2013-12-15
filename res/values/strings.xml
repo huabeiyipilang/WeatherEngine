@@ -39,4 +39,6 @@
     
     <string name="error">error</string>
     <string name="weather_to"> to </string>
+    
+    <string name="sheshidu">℃</string>
 </resources>

@@ -40,4 +40,6 @@
 
     <string name="error">错误</string>
     <string name="weather_to">转</string>
+    
+    <string name="sheshidu">℃</string>
 </resources>

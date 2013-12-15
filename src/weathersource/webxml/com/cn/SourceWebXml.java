@@ -8,6 +8,7 @@ import android.text.TextUtils;
 
 import cn.kli.utils.klilog;
 import cn.kli.weather.engine.City;
+import cn.kli.weather.engine.RequestResult;
 import cn.kli.weather.engine.WeatherEngine;
 import cn.kli.weather.engine.WeatherSource;
 
@@ -48,11 +49,11 @@ public class SourceWebXml implements WeatherSource {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				return WeatherEngine.RES_FAIL;
+				return RequestResult.RES_ERROR_UNKOWN;
 			}
 			mDataProxy.setDataPrepared(true);
 		}
-		return WeatherEngine.RES_SUCCESS;
+		return RequestResult.RES_SUCCESS;
 	}
 	
 	private ArrayList<MyCity> getProvinceList(){

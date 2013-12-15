@@ -7,6 +7,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import cn.kli.utils.klilog;
 import cn.kli.weather.engine.City;
+import cn.kli.weather.engine.RequestResult;
 import cn.kli.weather.engine.WeatherEngine;
 import cn.kli.weather.engine.WeatherSource;
 
@@ -42,12 +43,12 @@ public class SourceWeatherComCn implements WeatherSource {
 				saveCities(cities);
 				mDataProxy.setDataPrepared(true);
 			} catch (Exception e) {
-				return WeatherEngine.RES_FAIL;
+				return RequestResult.RES_ERROR_UNKOWN;
 			}
 		}else{
 			
 		}
-		return WeatherEngine.RES_SUCCESS;
+		return RequestResult.RES_SUCCESS;
 	}
 
 	private void saveCities(ArrayList<MyCity> cities){
