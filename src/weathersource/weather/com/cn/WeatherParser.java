@@ -19,7 +19,7 @@ public class WeatherParser {
 	public static MyCity parser(MyCity city, String source){
 		try {
 			JSONObject jsonObject = new JSONObject(source).getJSONObject("weatherinfo");
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyyÄêMMÔÂddÈÕ");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyå¹´MMæœˆddæ—¥");
 			String date_y = jsonObject.getString("date_y");
 			Calendar calendar = null;
 			try {
@@ -42,8 +42,8 @@ public class WeatherParser {
 					weather.currentTemp = jsonObject.getString("fchh");
 				}
 				String[] tempRange = jsonObject.getString("temp"+i).split("~");
-				weather.maxTemp = tempRange[0];
-				weather.minTemp = tempRange[1];
+				weather.maxTemp = tempRange[0].replace("â„ƒ", "");
+				weather.minTemp = tempRange[1].replace("â„ƒ", "");
 				weather.weather = getWeatherByName(jsonObject.getString("weather"+i));
 				weather.wind = jsonObject.getString("wind"+i);
 				weathers.add(weather);
@@ -61,74 +61,60 @@ public class WeatherParser {
 
 
 	private static int[] getWeatherByName(String name){
-		String[] names = name.split("×ª");
+		String[] names = name.split("è½¬");
 		ArrayList<Integer> nameList = new ArrayList<Integer>();
 		
 		for(String item : names){
 			int w = Weather.W_NO_DATA;
-			if("Çç".equals(item)){
+			if("æ™´".equals(item)){
 				w = Weather.W_QING;
-			}else if("¶àÔÆ".equals(item)){
+			}else if("å¤šäº‘".equals(item)){
 				w = Weather.W_DUOYUN;
-			}else if("Òõ".equals(item)){
+			}else if("é˜´".equals(item)){
 				w = Weather.W_YIN;
-			}else if("ÕóÓê".equals(item)){
+			}else if("é˜µé›¨".equals(item)){
 				w = Weather.W_ZHENYU;
-			}else if("À×ÕóÓê".equals(item)){
+			}else if("é›·é˜µé›¨".equals(item)){
 				w = Weather.W_LEIZHENYU;
-			}else if("À×ÕóÓê²¢°éÓĞ±ù±¢".equals(item)){
+			}else if("é›·é˜µé›¨å¹¶ä¼´æœ‰å†°é›¹".equals(item)){
 				w = Weather.W_LEIZHENYUBINGBANYOUBINGBAO;
-			}else if("Óê¼ĞÑ©".equals(item)){
+			}else if("é›¨å¤¹é›ª".equals(item)){
 				w = Weather.W_YUJIAXUE;
-			}else if("Ğ¡Óê".equals(item)){
+			}else if("å°é›¨".equals(item)){
 				w = Weather.W_XIAOYU;
-			}else if("ÖĞÓê".equals(item)){
+			}else if("ä¸­é›¨".equals(item)){
 				w = Weather.W_ZHONGYU;
-			}else if("´óÓê".equals(item)){
+			}else if("å¤§é›¨".equals(item)){
 				w = Weather.W_DAYU;
-			}else if("±©Óê".equals(item)){
+			}else if("æš´é›¨".equals(item)){
 				w = Weather.W_BAOYU;
-			}else if("´ó±©Óê".equals(item)){
+			}else if("å¤§æš´é›¨".equals(item)){
 				w = Weather.W_DABAOYU;
-			}else if("ÌØ´ó±©Óê".equals(item)){
+			}else if("ç‰¹å¤§æš´é›¨".equals(item)){
 				w = Weather.W_TEDABAOYU;
-			}else if("ÕóÑ©".equals(item)){
+			}else if("é˜µé›ª".equals(item)){
 				w = Weather.W_ZHENXUE;
-			}else if("Ğ¡Ñ©".equals(item)){
+			}else if("å°é›ª".equals(item)){
 				w = Weather.W_XIAOXUE;
-			}else if("ÖĞÑ©".equals(item)){
+			}else if("ä¸­é›ª".equals(item)){
 				w = Weather.W_ZHONGXUE;
-			}else if("´óÑ©".equals(item)){
+			}else if("å¤§é›ª".equals(item)){
 				w = Weather.W_DAXUE;
-			}else if("±©Ñ©".equals(item)){
+			}else if("æš´é›ª".equals(item)){
 				w = Weather.W_BAOXUE;
-			}else if("Îí".equals(item)){
+			}else if("é›¾".equals(item)){
 				w = Weather.W_WU;
-			}else if("¶³Óê".equals(item)){
+			}else if("å†»é›¨".equals(item)){
 				w = Weather.W_DONGYU;
-			}else if("É³³¾±©".equals(item)){
+			}else if("æ²™å°˜æš´".equals(item)){
 				w = Weather.W_SHACHENBAO;
-			}else if("Ğ¡Óê-ÖĞÓê".equals(item)){
+			}else if("å°é›¨ä¸­é›¨".equals(item)){
 				w = Weather.W_XIAOYUZHONGYU;
-			}else if("ÖĞÓê-´óÓê".equals(item)){
-				w = Weather.W_ZHONGYUDAYU;
-			}else if("´óÓê-±©Óê".equals(item)){
-				w = Weather.W_DAYUBAOYU;
-			}else if("±©Óê-´ó±©Óê".equals(item)){
-				w = Weather.W_BAOYUDABAOYU;
-			}else if("´ó±©Óê-ÌØ´ó±©Óê".equals(item)){
-				w = Weather.W_DABAOYUTEDABAOYU;
-			}else if("Ğ¡Ñ©-ÖĞÑ©".equals(item)){
-				w = Weather.W_XIAOXUEZHONGXUE;
-			}else if("ÖĞÑ©-´óÑ©".equals(item)){
-				w = Weather.W_ZHONGXUEDAXUE;
-			}else if("´óÑ©-±©Ñ©".equals(item)){
-				w = Weather.W_DAXUEBAOXUE;
-			}else if("¸¡³¾".equals(item)){
+			}else if("æµ®å°˜".equals(item)){
 				w = Weather.W_FUCHEN;
-			}else if("ÑïÉ³".equals(item)){
+			}else if("æ‰¬æ²™".equals(item)){
 				w = Weather.W_YANGSHA;
-			}else if("Ç¿É³³¾±©".equals(item)){
+			}else if("å¼ºæ²™å°˜æš´".equals(item)){
 				w = Weather.W_QIANGSHACHENBAO;
 			}
 			nameList.add(w);

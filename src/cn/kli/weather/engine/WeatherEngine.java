@@ -54,7 +54,7 @@ public class WeatherEngine {
             res = new SourceWebXml(mContext);
         } else {
             // default
-            res = new SourceWebXml(mContext);
+            res = new SourceWeatherComCn(mContext);
         }
         return res;
     }
