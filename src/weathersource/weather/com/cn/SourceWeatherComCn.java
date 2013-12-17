@@ -8,10 +8,9 @@ import android.text.TextUtils;
 import cn.kli.utils.klilog;
 import cn.kli.weather.engine.City;
 import cn.kli.weather.engine.RequestResult;
-import cn.kli.weather.engine.WeatherEngine;
 import cn.kli.weather.engine.WeatherSource;
 
-public class SourceWeatherComCn implements WeatherSource {
+public class SourceWeatherComCn implements WeatherSource, RequestResult {
 	private final static String WEATHER_URL = "http://m.weather.com.cn/data/xxx.html";
 	private final static String CITY_URL = "http://m.weather.com.cn/data5/cityxxx.xml";
 	private final static String SOURCE = "weather.com.cn";
@@ -43,12 +42,12 @@ public class SourceWeatherComCn implements WeatherSource {
 				saveCities(cities);
 				mDataProxy.setDataPrepared(true);
 			} catch (Exception e) {
-				return RequestResult.RES_ERROR_UNKOWN;
+				return RES_ERROR_UNKOWN;
 			}
 		}else{
 			
 		}
-		return RequestResult.RES_SUCCESS;
+		return RES_SUCCESS;
 	}
 
 	private void saveCities(ArrayList<MyCity> cities){

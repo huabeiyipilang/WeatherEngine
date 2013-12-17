@@ -8,67 +8,63 @@ import weathersource.webxml.com.cn.SourceWebXml;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import cn.kli.weather.engine.cache.CacheManager;
 
 public class WeatherEngine {
-    //actions
-    public final static String ACTION_FRESH_WIDGET_TIME = "cn.indroid.action.weather.freshwidgettime";
-    public final static String ACTION_FRESH_WIDGET = "cn.indroid.action.weather.freshwidget";
-    
-    //shared prefs
+    // shared prefs
     private final static String KEY_ENGINE_SOURCE = "engine_source";
-	
-	private final static String WEATHER_COM_CN = "��������̨";
-	private final static String WEB_XML = "WebXml";
-	
-	private final static String[] SOURCE_LIST = {WEB_XML, WEATHER_COM_CN};
-	
-	private static WeatherEngine mInstance;
-	private Context mContext;
-	private WeatherSource mSource;
-    private CacheManager mCache;
-    
-    private List<DataChangedListener> mListeners = new ArrayList<DataChangedListener>();
-    
-    private boolean isRequesting = false;
-	
-	private WeatherEngine(Context context){
-		mContext = context;
-        mCache = new CacheManager(mContext);
-	}
-	
-	public static WeatherEngine getInstance(Context context){
-		if(mInstance == null){
-			mInstance = new WeatherEngine(context);
-		}
-		return mInstance;
-	}
-	
-	public String[] getSourceList(){
-		return SOURCE_LIST;
-	}
-	
-	private WeatherSource getSourceByName(String name){
-		WeatherSource res;
-		if(WEATHER_COM_CN.equals(name)){
-			res = new SourceWeatherComCn(mContext);
-		}else if(WEB_XML.equals(name)){
-			res = new SourceWebXml(mContext);
-		}else{
-			//default
-			res = new SourceWebXml(mContext);
-		}
-		return res;
-	}
 
-    public interface DataChangedListener{
+    private final static String WEATHER_COM_CN = "��������̨";
+    private final static String WEB_XML = "WebXml";
+
+    private final static String[] SOURCE_LIST = { WEB_XML, WEATHER_COM_CN };
+
+    private static WeatherEngine mInstance;
+    private Context mContext;
+    private WeatherSource mSource;
+    private CacheManager mCache;
+
+    private List<DataChangedListener> mListeners = new ArrayList<DataChangedListener>();
+
+    private boolean isRequesting = false;
+
+    private WeatherEngine(Context context) {
+        mContext = context;
+        mCache = new CacheManager(mContext);
+    }
+
+    public static WeatherEngine getInstance(Context context) {
+        if (mInstance == null) {
+            mInstance = new WeatherEngine(context);
+        }
+        return mInstance;
+    }
+
+    public String[] getSourceList() {
+        return SOURCE_LIST;
+    }
+
+    private WeatherSource getSourceByName(String name) {
+        WeatherSource res;
+        if (WEATHER_COM_CN.equals(name)) {
+            res = new SourceWeatherComCn(mContext);
+        } else if (WEB_XML.equals(name)) {
+            res = new SourceWebXml(mContext);
+        } else {
+            // default
+            res = new SourceWebXml(mContext);
+        }
+        return res;
+    }
+
+    public interface DataChangedListener {
         void onWeatherChanged(City city);
+
         void onStateChanged(boolean isRequesting);
     }
-    
+
     private void notifyWeatherChanged(City city) {
         synchronized (mListeners) {
             for (DataChangedListener listener : mListeners) {
@@ -76,142 +72,139 @@ public class WeatherEngine {
             }
         }
     }
-    
-    private void notifyStateChanged(boolean isRequesting){
-        synchronized(mListeners){
-            for(DataChangedListener listener : mListeners){
+
+    private void notifyStateChanged(boolean isRequesting) {
+        synchronized (mListeners) {
+            for (DataChangedListener listener : mListeners) {
                 listener.onStateChanged(isRequesting);
             }
         }
     }
-    
-    public void register(DataChangedListener listener){
-        synchronized(mListeners){
+
+    public void register(DataChangedListener listener) {
+        synchronized (mListeners) {
             mListeners.add(listener);
             listener.onStateChanged(isRequesting);
         }
     }
-    
-    public void unRegister(DataChangedListener listener){
-        synchronized(mListeners){
+
+    public void unRegister(DataChangedListener listener) {
+        synchronized (mListeners) {
             mListeners.remove(listener);
         }
     }
+
     /**
      * 
      * Get city datas from internet and write to database.
      */
-    public void init(final Message callback){
-        new Thread(){
-            @Override
-            public void run() {
-                super.run();
-                callback.arg1 = init();
-                callback.sendToTarget();
-            }
-        }.start();
-    }
-    
-    private int init(){
-        mSource = getSourceByName(getEngineSource());
-        int res = mSource.onInit();
-        return res;
-    }
-
-    /**
-     * Must be called in thread.
-     * Get city weather from internet.
-     */
-    public City getWeatherByIndex(String index){
-        return mSource.getWeatherByIndex(index);
-    }
-    
-    public List<City> getCityList(City city){
-        return mSource.getCityList(city);
-    }
-    
-    public void changeEngineSource(final String source, final Message callback){
-        AsyncTask.execute(new Runnable(){
+    public void init(final Message callback) {
+        AsyncTask.execute(new Runnable() {
 
             @Override
             public void run() {
-                setEngineSource(source);
-                callback.arg1 = init();
-                callback.sendToTarget();
+                mSource = getSourceByName(getEngineSource());
+                if (callback != null) {
+                    callback.arg1 = mSource.onInit();
+                    callback.sendToTarget();
+                }
             }
-            
+
         });
     }
-    
-    public boolean isRequesting(){
-        return isRequesting;
-    }
-    
-    /**
-     * Must be called in thread.
-     * Get city weather from internet.
-     */
-    synchronized public void requestWeatherByIndex(final String index){
-        isRequesting = true;
-        notifyStateChanged(isRequesting);
-        new Thread(){
+
+    public void requestCityListByCity(final City city, final Message callback) {
+        AsyncTask.execute(new Runnable() {
+
             @Override
             public void run() {
-                super.run();
-                Looper.prepare();
-                City city = getWeatherByIndex(index);
+                List<City> list = mSource.getCityList(city);
+                if (callback != null) {
+                    callback.obj = list;
+                    callback.sendToTarget();
+                }
+            }
 
-                if(city != null && city.weather != null){
-                    //cache weather
+        });
+    }
+
+    public void changeEngineSource(final String source, final Message callback) {
+        setEngineSource(source);
+        init(callback);
+    }
+
+    public boolean isRequesting() {
+        return isRequesting;
+    }
+
+    /**
+     * Get city weather from internet.
+     */
+    synchronized public void requestWeatherByIndex(final String index, final Message callback) {
+        isRequesting = true;
+        notifyStateChanged(isRequesting);
+        AsyncTask.execute(new Runnable() {
+
+            @Override
+            public void run() {
+                City city = mSource.getWeatherByIndex(index);
+
+                if (city != null && city.weather != null) {
+                    // cache weather
                     mCache.cacheWeather(city);
                 }
                 isRequesting = false;
+                if (callback != null) {
+                    callback.obj = city;
+                    callback.sendToTarget();
+                }
                 notifyWeatherChanged(city);
                 notifyStateChanged(isRequesting);
-                Looper.loop();
             }
-        }.start();
+
+        });
     }
 
-    public void setDefaultMarkCity(City city){
+    public void setDefaultMarkCity(City city) {
         mCache.markDefaultCity(city, getEngineSource());
     }
-    
-    public boolean hasDefaultCity(){
+
+    public boolean hasDefaultCity() {
         return mCache.hasDefaultCity();
     }
-    
-    public City getDefaultMarkCity(){
-        
+
+    public City getDefaultMarkCity() {
+
         try {
             return mCache.getDefaultCity();
         } catch (Exception e) {
             // TODO Auto-generated catch block
             return null;
         }
-        
+
     }
-    
-    public void refreshWeather(){
+
+    public void refreshWeather() {
         City city = getDefaultMarkCity();
-        if(city != null){
-            getWeatherByIndex(city.index);
+        if (city != null) {
+            requestWeatherByIndex(city.index, null);
         }
     }
-    
-    private void setEngineSource(String source){
+
+    private void setEngineSource(String source) {
         SharedPreferences prefs = getPrefs();
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(KEY_ENGINE_SOURCE, source);
         editor.commit();
     }
-    
-    private String getEngineSource(){
+
+    private String getEngineSource() {
         SharedPreferences prefs = getPrefs();
         return prefs.getString(KEY_ENGINE_SOURCE, null);
     }
-    
-    private SharedPreferences getPrefs(){
+
+    private SharedPreferences getPrefs() {
         return PreferenceManager.getDefaultSharedPreferences(mContext);
     }
+
 }

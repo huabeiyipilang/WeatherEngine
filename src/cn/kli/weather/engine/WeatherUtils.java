@@ -1,12 +1,10 @@
 package cn.kli.weather.engine;
 
-import java.util.ArrayList;
-
 import cn.kli.weather.engine.Weather;
 import cn.kli.weatherengine.R;
 import android.content.Context;
 
-class WeatherUtils {
+public class WeatherUtils {
 
 	public static int getDrawable(int[] weather) {
 		int res = R.drawable.a_nothing;

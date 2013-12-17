@@ -9,19 +9,26 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-public class WeatherUpdateAlarm {
+public class UpdateAlarmManager {
     public final static String ACTION_UPDATE_WEATHER = "cn.indroid.action.updateweather";
     public final static String ACTION_NOTIFY_WEATHER = "cn.indroid.action.notifyweather";
-
-    private final static int NOTIFY_HOUR = 6;
     
     private final static String PREF_UPDATE_TIME = "update_time";
     private final static String PREF_UPDATE_DURING = "update_during";
 
+    private static UpdateAlarmManager sInstance;
+    
     private Context mContext;
     
-    public WeatherUpdateAlarm(Context context){
+    private UpdateAlarmManager(Context context){
         mContext = context;
+    }
+    
+    public static UpdateAlarmManager getInstance(Context context){
+        if(sInstance == null){
+            sInstance = new UpdateAlarmManager(context);
+        }
+        return sInstance;
     }
 
     public void setUpdateDuring(int hour){

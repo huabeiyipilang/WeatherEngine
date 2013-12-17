@@ -9,10 +9,9 @@ import android.text.TextUtils;
 import cn.kli.utils.klilog;
 import cn.kli.weather.engine.City;
 import cn.kli.weather.engine.RequestResult;
-import cn.kli.weather.engine.WeatherEngine;
 import cn.kli.weather.engine.WeatherSource;
 
-public class SourceWebXml implements WeatherSource {
+public class SourceWebXml implements WeatherSource, RequestResult {
 	private static final String PROVINCE_URL = "http://webservice.webxml.com.cn/WebServices/WeatherWS.asmx/getRegionProvince";
 	private static final String CITY_URL = "http://webservice.webxml.com.cn/WebServices/WeatherWS.asmx/getSupportCityString?theRegionCode=";
 	private static final String WEATHER_URL = "http://webservice.webxml.com.cn/WebServices/WeatherWS.asmx/getWeather";
@@ -49,11 +48,11 @@ public class SourceWebXml implements WeatherSource {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				return RequestResult.RES_ERROR_UNKOWN;
+				return RES_ERROR_UNKOWN;
 			}
 			mDataProxy.setDataPrepared(true);
 		}
-		return RequestResult.RES_SUCCESS;
+		return RES_SUCCESS;
 	}
 	
 	private ArrayList<MyCity> getProvinceList(){

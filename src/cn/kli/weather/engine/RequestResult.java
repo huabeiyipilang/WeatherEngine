@@ -1,6 +1,6 @@
 package cn.kli.weather.engine;
 
-public class RequestResult {
+public interface RequestResult {
     public final static int RES_SUCCESS = 0;
     public final static int RES_ERROR_UNKOWN = 1;
     public final static int RES_ERROR_NETWORK_UNAVAILABALE = 2;
