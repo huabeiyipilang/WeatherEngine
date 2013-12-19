@@ -3,8 +3,8 @@ package cn.kli.weather.engine;
 import java.util.ArrayList;
 import java.util.List;
 
-import weathersource.weather.com.cn.SourceWeatherComCn;
-import weathersource.webxml.com.cn.SourceWebXml;
+import weathersource.weathercomcn.SourceWeatherComCn;
+import weathersource.webxmlcomcn.SourceWebXml;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
