@@ -58,7 +58,16 @@ public class WeatherParser {
 		return city;
 	}
 	
-
+	public static String getCurrentTemp(String source){
+	    String res = null;
+	    try {
+            JSONObject jsonObject = new JSONObject(source).getJSONObject("weatherinfo");
+            res = jsonObject.getString("temp");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return res;
+	}
 
 	private static int[] getWeatherByName(String name){
 		String[] names = name.split("转");

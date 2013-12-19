@@ -12,6 +12,7 @@ import cn.kli.weather.engine.WeatherSource;
 
 public class SourceWeatherComCn implements WeatherSource, RequestResult {
 	private final static String WEATHER_URL = "http://m.weather.com.cn/data/xxx.html";
+    private final static String WEATHER_SK_URL = "http://www.weather.com.cn/data/sk/xxx.html";
 	private final static String CITY_URL = "http://m.weather.com.cn/data5/cityxxx.xml";
 	private final static String SOURCE = "weather.com.cn";
 	
@@ -113,6 +114,9 @@ public class SourceWeatherComCn implements WeatherSource, RequestResult {
 			klilog.info("error respose null");
 			throw new NullPointerException();
 		}
+        String skUrl = WEATHER_SK_URL.replace("xxx", city.code);
+        String skResponse = mAccess.request(skUrl);
+        city.weather.get(0).currentTemp = WeatherParser.getCurrentTemp(skResponse);
 		return city;
 	}
 
@@ -120,4 +124,9 @@ public class SourceWeatherComCn implements WeatherSource, RequestResult {
 	public List<City> getCityList(City city) {
 		return mDataProxy.getCityList(city);
 	}
+
+    @Override
+    public List<City> searchCityByName(String name) {
+        return null;
+    }
 }

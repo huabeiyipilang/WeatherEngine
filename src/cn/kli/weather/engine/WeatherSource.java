@@ -7,4 +7,5 @@ public interface WeatherSource {
 	int onInit();
 	City getWeatherByIndex(String index);
 	List<City> getCityList(City city);
+	List<City> searchCityByName(String name);
 }
