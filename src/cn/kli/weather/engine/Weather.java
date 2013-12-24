@@ -82,6 +82,8 @@ public class Weather implements Parcelable{
 	public final static int W_YANGSHA = 31;
 	//ǿɳ����
 	public final static int W_QIANGSHACHENBAO = 32;
+	//霾
+	public final static int W_MAI = 33;
 	
 	public Calendar calendar;
 	public String currentTemp;

@@ -3,6 +3,8 @@ package weathersource.weathercomcn;
 import java.util.ArrayList;
 import java.util.List;
 
+import weathersource.InternetAccess;
+
 import android.content.Context;
 import android.text.TextUtils;
 import cn.kli.utils.klilog;

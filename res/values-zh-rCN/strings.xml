@@ -37,6 +37,7 @@
     <string name="weather_ysh">扬沙</string>
     <string name="weather_qshchb">强沙尘暴</string>
     <string name="weather_nothing">没有数据</string>
+    <string name="weather_mai">霾</string>
 
     <string name="error">错误</string>
     <string name="weather_to">转</string>

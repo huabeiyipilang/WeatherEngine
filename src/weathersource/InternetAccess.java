@@ -1,4 +1,4 @@
-package weathersource.webxmlcomcn;
+package weathersource;
 
 import java.io.IOException;
 
@@ -10,21 +10,11 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
-import cn.kli.utils.klilog;
-
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
-import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
-import android.os.Messenger;
-import android.os.RemoteException;
+import cn.kli.utils.klilog;
 
 public class InternetAccess {
 	

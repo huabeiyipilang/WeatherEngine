@@ -26,6 +26,7 @@ public class WeatherUtils {
 		case Weather.W_DUOYUN:
 			res = R.drawable.a_1;
 			break;
+        case Weather.W_MAI:
 		case Weather.W_YIN:
 			res = R.drawable.a_2;
 			break;
@@ -270,6 +271,9 @@ public class WeatherUtils {
 		case Weather.W_QIANGSHACHENBAO:
 			res = R.string.weather_qshchb;
 			break;
+		case Weather.W_MAI:
+		    res = R.string.weather_mai;
+		    break;
 		}
 		return res;
 	}

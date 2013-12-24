@@ -125,6 +125,8 @@ public class WeatherParser {
 				w = Weather.W_YANGSHA;
 			}else if("强沙尘暴".equals(item)){
 				w = Weather.W_QIANGSHACHENBAO;
+			}else if("霾".equals(item)){
+			    w = Weather.W_MAI;
 			}
 			nameList.add(w);
 		}

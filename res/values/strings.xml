@@ -36,6 +36,7 @@
     <string name="weather_ysh">sand blowing</string>
     <string name="weather_qshchb">heavy sandstorm</string>
     <string name="weather_nothing">no data</string>
+    <string name="weather_mai">haze</string>
     
     <string name="error">error</string>
     <string name="weather_to"> to </string>
