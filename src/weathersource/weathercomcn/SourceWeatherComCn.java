@@ -114,7 +114,7 @@ public class SourceWeatherComCn implements WeatherSource, RequestResult {
 			klilog.info("finish");
 		}else{
 			klilog.info("error respose null");
-			throw new NullPointerException();
+			return null;
 		}
         String skUrl = WEATHER_SK_URL.replace("xxx", city.code);
         String skResponse = mAccess.request(skUrl);
