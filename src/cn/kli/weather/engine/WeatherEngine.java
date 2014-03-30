@@ -3,30 +3,31 @@ package cn.kli.weather.engine;
 import java.util.ArrayList;
 import java.util.List;
 
-import weathersource.weathercomcn.SourceWeatherComCn;
-import weathersource.webxmlcomcn.SourceWebXml;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import cn.kli.weather.engine.cache.CacheManager;
 
+/**
+ * 天气引擎，提供查询天气、获取城市等功能。
+ * @Package cn.kli.weather.engine
+ * @ClassName: WeatherEngine
+ * @author Carl Li
+ * @mail huabeiyipilang@gmail.com
+ * @date 2014-3-28 下午5:04:25
+ */
 public class WeatherEngine {
-    // shared prefs
     private final static String KEY_ENGINE_SOURCE = "engine_source";
-
-    private final static String WEATHER_COM_CN = "��������̨";
-    private final static String WEB_XML = "WebXml";
-
-    private final static String[] SOURCE_LIST = { WEB_XML, WEATHER_COM_CN };
 
     private static WeatherEngine mInstance;
     private Context mContext;
     private WeatherSource mSource;
     private CacheManager mCache;
 
-    private List<DataChangedListener> mListeners = new ArrayList<DataChangedListener>();
+    private List<EngineListener> mListeners = new ArrayList<EngineListener>();
 
     private boolean isRequesting = false;
 
@@ -35,6 +36,14 @@ public class WeatherEngine {
         mCache = new CacheManager(mContext);
     }
 
+    /**
+     * 获取天气引擎实例
+     * @Title: getInstance
+     * @param context
+     * @return
+     * @return WeatherEngine
+     * @date 2014-3-28 下午5:05:45
+     */
     public static WeatherEngine getInstance(Context context) {
         if (mInstance == null) {
             mInstance = new WeatherEngine(context);
@@ -42,32 +51,9 @@ public class WeatherEngine {
         return mInstance;
     }
 
-    public String[] getSourceList() {
-        return SOURCE_LIST;
-    }
-
-    private WeatherSource getSourceByName(String name) {
-        WeatherSource res;
-        if (WEATHER_COM_CN.equals(name)) {
-            res = new SourceWeatherComCn(mContext);
-        } else if (WEB_XML.equals(name)) {
-            res = new SourceWebXml(mContext);
-        } else {
-            // default
-            res = new SourceWeatherComCn(mContext);
-        }
-        return res;
-    }
-
-    public interface DataChangedListener {
-        void onWeatherChanged(City city);
-
-        void onStateChanged(boolean isRequesting);
-    }
-
     private void notifyWeatherChanged(City city) {
         synchronized (mListeners) {
-            for (DataChangedListener listener : mListeners) {
+            for (EngineListener listener : mListeners) {
                 listener.onWeatherChanged(city);
             }
         }
@@ -75,44 +61,78 @@ public class WeatherEngine {
 
     private void notifyStateChanged(boolean isRequesting) {
         synchronized (mListeners) {
-            for (DataChangedListener listener : mListeners) {
-                listener.onStateChanged(isRequesting);
+            for (EngineListener listener : mListeners) {
+                listener.onRequestStateChanged(isRequesting);
             }
         }
     }
 
-    public void register(DataChangedListener listener) {
+    /**
+     * 注册回掉。
+     * 注册后立即回调请求状态。
+     * @Title: register
+     * @param listener
+     * @return void
+     * @date 2014-3-28 下午5:12:02
+     */
+    public void addListener(EngineListener listener) {
         synchronized (mListeners) {
             mListeners.add(listener);
-            listener.onStateChanged(isRequesting);
+            listener.onRequestStateChanged(isRequesting);
         }
     }
 
-    public void unRegister(DataChangedListener listener) {
+    /**
+     * 注销回调
+     * @Title: unListen
+     * @param listener
+     * @return void
+     * @date 2014-3-28 下午5:14:37
+     */
+    public void removeListener(EngineListener listener) {
         synchronized (mListeners) {
             mListeners.remove(listener);
         }
     }
 
+    
     /**
-     * 
-     * Get city datas from internet and write to database.
+     * 初始化天气引擎
+     * @Title: init
+     * @param source
+     * @param callback
+     * @return void
+     * @date 2014-3-28 下午5:17:52
      */
-    public void init(final Message callback) {
+    public void init(WeatherSource source) {
+        mSource = source;
         AsyncTask.execute(new Runnable() {
 
             @Override
             public void run() {
-                mSource = getSourceByName(getEngineSource());
-                if (callback != null) {
-                    callback.arg1 = mSource.onInit();
-                    callback.sendToTarget();
+                int res = mSource.onInit();
+                if(res == ErrorCode.SUCCESS){
+                    for(EngineListener listener : mListeners){
+                        listener.onInited();
+                    }
+                }else{
+                    for(EngineListener listener : mListeners){
+                        listener.onError(res);
+                    }
                 }
             }
 
         });
     }
 
+    /**
+     * 获取子城市列表
+     * @Title: requestCityListByCity
+     * @param city
+     * @param callback
+     * @return void
+     * @date 2014-3-29 下午4:56:02
+     */
     public void requestCityListByCity(final City city, final Message callback) {
         AsyncTask.execute(new Runnable() {
 
@@ -128,36 +148,39 @@ public class WeatherEngine {
         });
     }
 
-    public void changeEngineSource(final String source, final Message callback) {
-        setEngineSource(source);
-        init(callback);
-    }
-
+    /**
+     * 是否正在请求
+     * @Title: isRequesting
+     * @return
+     * @return boolean
+     * @date 2014-3-29 下午9:21:53
+     */
     public boolean isRequesting() {
         return isRequesting;
     }
 
+
     /**
-     * Get city weather from internet.
+     * 通过天气源，根据城市id请求天气数据
+     * @Title: requestWeatherByCityId
+     * @param id
+     * @return void
+     * @date 2014-3-29 下午9:22:06
      */
-    synchronized public void requestWeatherByIndex(final String index, final Message callback) {
+    synchronized public void requestWeatherByCityIndex(final String index) {
         isRequesting = true;
         notifyStateChanged(isRequesting);
         AsyncTask.execute(new Runnable() {
 
             @Override
             public void run() {
-                City city = mSource.getWeatherByIndex(index);
+                City city = mSource.getWeatherByCityIndex(index);
 
-                if (city != null && city.weather != null) {
+                if (city != null && city.weathers != null) {
                     // cache weather
                     mCache.cacheWeather(city);
                 }
                 isRequesting = false;
-                if (callback != null) {
-                    callback.obj = city;
-                    callback.sendToTarget();
-                }
                 notifyWeatherChanged(city);
                 notifyStateChanged(isRequesting);
             }
@@ -165,30 +188,37 @@ public class WeatherEngine {
         });
     }
 
-    public void setDefaultMarkCity(City city) {
-        mCache.markDefaultCity(city, getEngineSource());
+    /**
+     * 收藏城市
+     * @Title: markCity
+     * @param city
+     * @return void
+     * @date 2014-3-29 下午9:23:18
+     */
+    public void markCity(City city) {
+        mCache.markCity(city);
     }
 
-    public boolean hasDefaultCity() {
-        return mCache.hasDefaultCity();
+    /**
+     * 获取收藏城市列表
+     * @Title: getMarkCity
+     * @return
+     * @return List<City>
+     * @date 2014-3-29 下午9:23:41
+     */
+    public List<City> getMarkCity() {
+        return mCache.getMarkedCities();
     }
-
-    public City getDefaultMarkCity() {
-
-        try {
-            return mCache.getDefaultCity();
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            return null;
-        }
-
-    }
-
-    public void refreshWeather() {
-        City city = getDefaultMarkCity();
-        if (city != null) {
-            requestWeatherByIndex(city.index, null);
-        }
+    
+    /**
+     * 删除收藏城市
+     * @Title: removeCity
+     * @param city
+     * @return void
+     * @date 2014-3-30 上午9:46:51
+     */
+    public void removeCity(City city){
+        mCache.removeCity(city);
     }
 
     private void setEngineSource(String source) {

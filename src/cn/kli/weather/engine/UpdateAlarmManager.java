@@ -9,7 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-public class UpdateAlarmManager {
+class UpdateAlarmManager {
     public final static String ACTION_UPDATE_WEATHER = "cn.indroid.action.updateweather";
     public final static String ACTION_NOTIFY_WEATHER = "cn.indroid.action.notifyweather";
     

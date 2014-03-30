@@ -1,103 +1,221 @@
 package cn.kli.weather.engine;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import cn.kli.utils.dao.BaseInfo;
+import cn.kli.utils.dao.DbField;
+import cn.kli.utils.dao.DbField.DataType;
+import cn.kli.weatherengine.R;
 
 /**
- * 
- * @author kli
- *
+ * 天气类
+ * @Package cn.kli.weather.engine
+ * @ClassName: Weather
+ * @author Carl Li
+ * @mail huabeiyipilang@gmail.com
+ * @date 2014-3-29 下午3:04:55
  */
-
-public class Weather implements Parcelable{
-	//û�����
+public class Weather extends BaseInfo implements Parcelable{
+	
+	/**
+	 * 无数据
+	 */
 	public final static int W_NO_DATA = 0;
-	//����
+
+	/**
+	 * 晴
+	 */
 	public final static int W_QING = 1;
-	//����
+
+	/**
+	 * 多云
+	 */
 	public final static int W_DUOYUN = 2;
-	//��
+
+	/**
+	 * 阴
+	 */
 	public final static int W_YIN = 3;
-	//����
+
+	/**
+	 * 阵雨
+	 */
 	public final static int W_ZHENYU = 4;
-	//������
+
+	/**
+	 * 雷阵雨
+	 */
 	public final static int W_LEIZHENYU = 5;
-	//�����겢���б�
+
+	/**
+	 * 雷阵雨并伴有冰雹
+	 */
 	public final static int W_LEIZHENYUBINGBANYOUBINGBAO = 6;
-	//���ѩ
+	
+	/**
+	 * 雨夹雪
+	 */
 	public final static int W_YUJIAXUE = 7;
-	//С��
+
+	/**
+	 * 小雨
+	 */
 	public final static int W_XIAOYU = 8;
-	//����
+
+	/**
+	 * 中雨
+	 */
 	public final static int W_ZHONGYU = 9;
-	//����
+	/**
+	 * 大雨
+	 */
 	public final static int W_DAYU = 10;
-	//����
+	/**
+	 * 暴雨
+	 */
 	public final static int W_BAOYU = 11;
-	//����
+	/**
+	 * 大暴雨
+	 */
 	public final static int W_DABAOYU = 12;
-	//�ش���
+	/**
+	 * 特大暴雨
+	 */
 	public final static int W_TEDABAOYU = 13;
-	//��ѩ
+	/**
+	 * 阵雪
+	 */
 	public final static int W_ZHENXUE = 14;
-	//Сѩ
+	/**
+	 * 小雪
+	 */
 	public final static int W_XIAOXUE = 15;
-	//��ѩ
+	/**
+	 * 中雪
+	 */
 	public final static int W_ZHONGXUE = 16;
-	//��ѩ
+	/**
+	 * 大雪
+	 */
 	public final static int W_DAXUE = 17;
-	//��ѩ
+	/**
+	 * 暴雪
+	 */
 	public final static int W_BAOXUE = 18;
-	//��
+	/**
+	 * 雾
+	 */
 	public final static int W_WU = 19;
-	//����
+	/**
+	 * 冻雨
+	 */
 	public final static int W_DONGYU = 20;
-	//ɳ����
+	/**
+	 * 沙尘暴
+	 */
 	public final static int W_SHACHENBAO = 21;
-	//С��-����
+
 	public final static int W_XIAOYUZHONGYU = 22;
-	//����-����
 	public final static int W_ZHONGYUDAYU = 23;
-	//����-����
 	public final static int W_DAYUBAOYU = 24;
-	//����-����
 	public final static int W_BAOYUDABAOYU = 25;
-	//����-�ش���
 	public final static int W_DABAOYUTEDABAOYU = 26;
-	//Сѩ-��ѩ
 	public final static int W_XIAOXUEZHONGXUE = 27;
-	//��ѩ-��ѩ
 	public final static int W_ZHONGXUEDAXUE = 28;
-	//��ѩ-��ѩ
 	public final static int W_DAXUEBAOXUE = 29;
-	//����
+	
+	/**
+	 * 浮尘
+	 */
 	public final static int W_FUCHEN = 30;
-	//��ɳ
+	/**
+	 * 扬沙
+	 */
 	public final static int W_YANGSHA = 31;
-	//ǿɳ����
 	public final static int W_QIANGSHACHENBAO = 32;
-	//霾
+	/**
+	 * 霾
+	 */
 	public final static int W_MAI = 33;
 	
+	
+	
+	/**
+	 * 城市id
+	 */
+    @DbField(name = "city_index", type = DataType.TEXT, isNull = false)
+	public String city_id;
+	/**
+	 * 日期
+	 */
+    @DbField(name = "calendar", type = DataType.CALENDAR, isNull = false)
 	public Calendar calendar;
+	
+	/**
+	 * 当前温度（只对当天有效）
+	 */
+    @DbField(name = "current_temp", type = DataType.TEXT)
 	public String currentTemp;
+	
+	/**
+	 * 最高温度
+	 */
+    @DbField(name = "max_temp", type = DataType.TEXT)
 	public String maxTemp;
+	
+	/**
+	 * 最低温度
+	 */
+    @DbField(name = "min_temp", type = DataType.TEXT)
 	public String minTemp;
+	
+	/**
+	 * 天气类型（某些天气源每天有2种天气类型）
+	 */
+    @DbField(name = "weathers", type = DataType.INTARRAY)
 	public int[] weather;
+	
+	/**
+	 * 风力
+	 */
+    @DbField(name = "wind", type = DataType.TEXT)
 	public String wind;
 
-	public String getWeatherName(Context context){
+	/**
+	 * 获取天气名称
+	 * @Title: getWeatherName
+	 * @param context
+	 * @return
+	 * @return String[]
+	 * @date 2014-3-28 下午5:42:08
+	 */
+	public String[] getWeatherName(Context context){
 		return WeatherUtils.getWeather(context, weather);
 	}
 	
-	public int getIcon(){
-		return WeatherUtils.getDrawable(weather);
+	/**
+	 * 格式化天气名称。
+	 * 如：晴转多云
+	 * @Title: getFormatWeatherName
+	 * @param context
+	 * @return
+	 * @return String
+	 * @date 2014-3-29 下午3:03:01
+	 */
+	public String getFormatWeatherName(Context context){
+	    String[] names = getWeatherName(context);
+	    StringBuilder sb = new StringBuilder(names[0]);
+	    if(names.length > 1){
+	        for(int i = 1; i < names.length; i++){
+	            sb.append(context.getString(R.string.weather_to));
+	            sb.append(names[i]);
+	        }
+	    }
+	    return sb.toString();
 	}
 	
 	@Override

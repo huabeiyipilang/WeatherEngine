@@ -5,11 +5,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import android.content.Context;
 import cn.kli.utils.klilog;
 
-import android.content.Context;
-
-public class Utils {
+class Utils {
 	public static boolean copyDatabaseFile(Context context, boolean isfored, String dbName) {
 		String DATABASE_NAME = dbName;
 		String DATABASES_DIR = "/data/data/"+context.getPackageName()+"/databases/";
