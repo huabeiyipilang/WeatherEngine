@@ -148,7 +148,7 @@ public class Weather extends BaseInfo implements Parcelable{
 	 * 城市id
 	 */
     @DbField(name = "city_index", type = DataType.TEXT, isNull = false)
-	public String city_id;
+	public String city_index;
 	/**
 	 * 日期
 	 */

@@ -53,6 +53,7 @@ public class CacheManager {
      */
     public void markCity(City city){
         CityDao dao = getCityDao();
+        dao.delete(null, null);
         City cityMarked = getMarkedByCityIndex(city.index);
         if(cityMarked == null){
             dao.insert(city);
@@ -74,7 +75,7 @@ public class CacheManager {
     public void cacheWeather(City city){
         WeatherDao dao = getWeatherDao();
         for(Weather weather : city.weathers){
-            dao.delete("city_id=? and calendar=?", new String[]{weather.city_id, weather.calendar.getTimeInMillis()+""});
+            dao.delete("city_index=? and calendar=?", new String[]{weather.city_index, weather.calendar.getTimeInMillis()+""});
             dao.insert(weather);
         }
     }
