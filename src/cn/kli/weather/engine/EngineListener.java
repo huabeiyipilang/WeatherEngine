@@ -1,71 +1,81 @@
 package cn.kli.weather.engine;
 
+import java.util.List;
+
 /**
  * 天气引擎回调
+ * 
  * @Package cn.kli.weather.engine
- * @ClassName: DataChangedListener
+ * @ClassName: EngineListener
  * @author Carl Li
  * @mail huabeiyipilang@gmail.com
  * @date 2014-3-28 下午5:06:15
  */
 public class EngineListener {
-    
-    
+
     /**
      * 天气数据变化
+     * 
      * @Title: onWeatherChanged
-     * @param city 内有最新天气信息
+     * @param city
+     *            内有最新天气信息
      * @return void
      * @date 2014-3-28 下午5:18:31
      */
-    protected void onWeatherChanged(City city){
-        
+    private void onWeatherChanged(City city) {
+
     }
-    
-    
+
     /**
      * 回调请求状态
+     * 
      * @Title: onRequestStateChanged
      * @param isRequesting
      * @return void
      * @date 2014-3-28 下午5:16:07
      */
-    protected void onRequestStateChanged(boolean isRequesting){
-        
+    protected void onRequestStateChanged(boolean isRequesting) {
+
     }
-    
-    
+
     /**
-     * 初始化成功。
-     * 初始化失败会在onError中回调
-     * @Title: onInited
+     * 初始化回调
+     * 
+     * @Title: onInitFinished
+     * @param res
      * @return void
-     * @date 2014-3-28 下午5:22:50
+     * @date 2014-4-4 下午3:42:43
      */
-    protected void onInited(){
-        
+    protected void onInitFinished(int res) {
+
     }
-    
-    
+
     /**
-     * 错误回调，详见{@link ErrorCode}
-     * @Title: onError
-     * @param errorCode
+     * 城市列表查询回调
+     * 
+     * @Title: onCityListResponse
+     * @param res
+     * @param requestId
+     * @param list
      * @return void
-     * @date 2014-3-28 下午5:23:22
+     * @date 2014-4-4 下午3:43:00
      */
-    protected void onError(int errorCode){
-        
+    protected void onCityListResponse(int res, int requestId, List<City> list) {
+
     }
-    
+
     /**
-     * 请求城市列表回调
-     * @Title: onCityListReceived
+     * 天气查询回调。
+     * 
+     * @Title: onWeatherResponse
+     * @param res
+     * @param requestId
      * @param city
      * @return void
-     * @date 2014-3-29 下午5:04:40
+     * @date 2014-4-4 下午3:45:01
      */
-    protected void onCityListReceived(City city){
-        
+    protected void onWeatherResponse(int res, int requestId, City city) {
+
     }
+
 }

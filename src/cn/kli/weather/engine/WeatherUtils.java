@@ -3,12 +3,12 @@ package cn.kli.weather.engine;
 import android.content.Context;
 import cn.kli.weatherengine.R;
 
-public class WeatherUtils {
+class WeatherUtils {
 
-	public static String[] getWeather(Context context, int[] weather){
+	public static String[] getWeather(int[] weather){
 		String[] weatherArray = new String[weather.length];
 		for(int i = 0; i < weather.length; i++){
-		    weatherArray[i] = context.getString(getName(weather[i]));
+		    weatherArray[i] = getName(weather[i]);
 		}
 		return weatherArray;
 	}
@@ -44,111 +44,108 @@ public class WeatherUtils {
 		return res;
 	}
 	
-	private static String getName(Context context, int weather){
-		return context.getString(getName(weather));
-	}
 	
-	public static int getName(int weather){
-		int res = R.string.weather_nothing;
+	public static String getName(int weather){
+		String res = "N/A";
 		switch(weather){
 		case Weather.W_QING:
-			res = R.string.weather_q;
+			res = "晴";
 			break;
 		case Weather.W_DUOYUN:
-			res = R.string.weather_dyun;
+            res = "多云";
 			break;
 		case Weather.W_YIN:
-			res = R.string.weather_y;
+            res = "阴";
 			break;
 		case Weather.W_ZHENYU:
-			res = R.string.weather_zhy;
+            res = "阵雨";
 			break;
 		case Weather.W_LEIZHENYU:
-			res = R.string.weather_lzhy;
+            res = "雷阵雨";
 			break;
 		case Weather.W_LEIZHENYUBINGBANYOUBINGBAO:
-			res = R.string.weather_lzhybbybb;
+            res = "雷阵雨并伴有冰雹";
 			break;
 		case Weather.W_YUJIAXUE:
-			res = R.string.weather_yjx;
+            res = "雨加雪";
 			break;
 		case Weather.W_XIAOYU:
-			res = R.string.weather_xy;
+            res = "小雨";
 			break;
 		case Weather.W_ZHONGYU:
-			res = R.string.weather_zhy;
+            res = "中雨";
 			break;
 		case Weather.W_DAYU:
-			res = R.string.weather_dy;
+            res = "大雨";
 			break;
 		case Weather.W_BAOYU:
-			res = R.string.weather_by;
+            res = "暴雨";
 			break;
 		case Weather.W_DABAOYU:
-			res = R.string.weather_dby;
+            res = "大暴雨";
 			break;
 		case Weather.W_TEDABAOYU:
-			res = R.string.weather_tdby;
+            res = "特大暴雨";
 			break;
 		case Weather.W_ZHENXUE:
-			res = R.string.weather_zhx;
+            res = "阵雪";
 			break;
 		case Weather.W_XIAOXUE:
-			res = R.string.weather_xx;
+            res = "小雪";
 			break;
 		case Weather.W_ZHONGXUE:
-			res = R.string.weather_zhongx;
+            res = "中雪";
 			break;
 		case Weather.W_DAXUE:
-			res = R.string.weather_dx;
+            res = "大雪";
 			break;
 		case Weather.W_BAOXUE:
-			res = R.string.weather_bx;
+            res = "暴雪";
 			break;
 		case Weather.W_WU:
-			res = R.string.weather_w;
+            res = "雾";
 			break;
 		case Weather.W_DONGYU:
-			res = R.string.weather_dy;
+            res = "冻雨";
 			break;
 		case Weather.W_SHACHENBAO:
-			res = R.string.weather_schb;
+            res = "沙尘暴";
 			break;
 		case Weather.W_XIAOYUZHONGYU:
-			res = R.string.weather_xyzhy;
+            res = "小雨-中雨";
 			break;
 		case Weather.W_ZHONGYUDAYU:
-			res = R.string.weather_zhydy;
+            res = "中雨-大雨";
 			break;
 		case Weather.W_DAYUBAOYU:
-			res = R.string.weather_dyby;
+            res = "大雨-暴雨";
 			break;
 		case Weather.W_BAOYUDABAOYU:
-			res = R.string.weather_bydby;
+            res = "暴雨-大暴雨";
 			break;
 		case Weather.W_DABAOYUTEDABAOYU:
-			res = R.string.weather_dbytdby;
+            res = "大暴雨-特大暴雨";
 			break;
 		case Weather.W_XIAOXUEZHONGXUE:
-			res = R.string.weather_xxzhx;
+            res = "小雪-中雪";
 			break;
 		case Weather.W_ZHONGXUEDAXUE:
-			res = R.string.weather_zhxdx;
+            res = "中雪-大雪";
 			break;
 		case Weather.W_DAXUEBAOXUE:
-			res = R.string.weather_dxbx;
+            res = "大雪-暴雪";
 			break;
 		case Weather.W_FUCHEN:
-			res = R.string.weather_fch;
+            res = "浮尘";
 			break;
 		case Weather.W_YANGSHA:
-			res = R.string.weather_ysh;
+            res = "扬沙";
 			break;
 		case Weather.W_QIANGSHACHENBAO:
-			res = R.string.weather_qshchb;
+            res = "强沙尘暴";
 			break;
 		case Weather.W_MAI:
-		    res = R.string.weather_mai;
+            res = "霾";
 		    break;
 		}
 		return res;

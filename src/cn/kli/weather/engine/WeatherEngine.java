@@ -5,14 +5,14 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
-import android.os.Message;
 import android.preference.PreferenceManager;
+import android.support.v4.util.SparseArrayCompat;
 import cn.kli.weather.engine.cache.CacheManager;
 
 /**
  * 天气引擎，提供查询天气、获取城市等功能。
+ * 
  * @Package cn.kli.weather.engine
  * @ClassName: WeatherEngine
  * @author Carl Li
@@ -26,18 +26,19 @@ public class WeatherEngine {
     private Context mContext;
     private WeatherSource mSource;
     private CacheManager mCache;
+    private RequestManager mRequestManager;
 
     private List<EngineListener> mListeners = new ArrayList<EngineListener>();
-
-    private boolean isRequesting = false;
 
     private WeatherEngine(Context context) {
         mContext = context;
         mCache = new CacheManager(mContext);
+        mRequestManager = new RequestManager();
     }
 
     /**
      * 获取天气引擎实例
+     * 
      * @Title: getInstance
      * @param context
      * @return
@@ -51,25 +52,9 @@ public class WeatherEngine {
         return mInstance;
     }
 
-    private void notifyWeatherChanged(City city) {
-        synchronized (mListeners) {
-            for (EngineListener listener : mListeners) {
-                listener.onWeatherChanged(city);
-            }
-        }
-    }
-
-    private void notifyStateChanged(boolean isRequesting) {
-        synchronized (mListeners) {
-            for (EngineListener listener : mListeners) {
-                listener.onRequestStateChanged(isRequesting);
-            }
-        }
-    }
-
     /**
-     * 注册回掉。
-     * 注册后立即回调请求状态。
+     * 注册回掉。 注册后立即回调请求状态。
+     * 
      * @Title: register
      * @param listener
      * @return void
@@ -78,12 +63,13 @@ public class WeatherEngine {
     public void addListener(EngineListener listener) {
         synchronized (mListeners) {
             mListeners.add(listener);
-            listener.onRequestStateChanged(isRequesting);
+            listener.onRequestStateChanged(mRequestManager.isRequesting);
         }
     }
 
     /**
      * 注销回调
+     * 
      * @Title: unListen
      * @param listener
      * @return void
@@ -95,29 +81,25 @@ public class WeatherEngine {
         }
     }
 
-    
     /**
      * 初始化天气引擎
+     * 
      * @Title: init
      * @param source
      * @param callback
      * @return void
      * @date 2014-3-28 下午5:17:52
      */
-    public void init(WeatherSource source) {
+    public int init(WeatherSource source) {
         mSource = source;
-        AsyncTask.execute(new Runnable() {
+        return mRequestManager.request(new Request() {
 
             @Override
             public void run() {
                 int res = mSource.onInit();
-                if(res == ErrorCode.SUCCESS){
-                    for(EngineListener listener : mListeners){
-                        listener.onInited();
-                    }
-                }else{
-                    for(EngineListener listener : mListeners){
-                        listener.onError(res);
+                synchronized (mListeners) {
+                    for (EngineListener listener : mListeners) {
+                        listener.onInitFinished(res);
                     }
                 }
             }
@@ -127,21 +109,25 @@ public class WeatherEngine {
 
     /**
      * 获取子城市列表
+     * 
      * @Title: requestCityListByCity
      * @param city
      * @param callback
      * @return void
      * @date 2014-3-29 下午4:56:02
      */
-    public void requestCityListByCity(final City city, final Message callback) {
-        AsyncTask.execute(new Runnable() {
+    public int requestCityListByCity(final City city) {
+        return mRequestManager.request(new Request() {
 
             @Override
             public void run() {
-                List<City> list = mSource.getCityList(city);
-                if (callback != null) {
-                    callback.obj = list;
-                    callback.sendToTarget();
+                List<City> list = new ArrayList<City>();
+                int res = mSource.requestCityList(city, list);
+
+                synchronized (mListeners) {
+                    for (EngineListener listener : mListeners) {
+                        listener.onCityListResponse(res, index, list);
+                    }
                 }
             }
 
@@ -150,39 +136,41 @@ public class WeatherEngine {
 
     /**
      * 是否正在请求
+     * 
      * @Title: isRequesting
      * @return
      * @return boolean
      * @date 2014-3-29 下午9:21:53
      */
     public boolean isRequesting() {
-        return isRequesting;
+        return mRequestManager.isRequesting;
     }
-
 
     /**
      * 通过天气源，根据城市id请求天气数据
+     * 
      * @Title: requestWeatherByCityId
      * @param id
      * @return void
      * @date 2014-3-29 下午9:22:06
      */
-    synchronized public void requestWeatherByCityIndex(final String index) {
-        isRequesting = true;
-        notifyStateChanged(isRequesting);
-        AsyncTask.execute(new Runnable() {
+    synchronized public int requestWeatherByCity(final City city) {
+        return mRequestManager.request(new Request() {
 
             @Override
             public void run() {
-                City city = mSource.getWeatherByCityIndex(index);
+                int res = mSource.requestWeatherByCity(city);
 
-                if (city != null && city.weathers != null) {
+                if (res == ErrorCode.SUCCESS && city != null && city.weathers != null) {
                     // cache weather
                     mCache.cacheWeather(city);
                 }
-                isRequesting = false;
-                notifyWeatherChanged(city);
-                notifyStateChanged(isRequesting);
+
+                synchronized (mListeners) {
+                    for (EngineListener listener : mListeners) {
+                        listener.onWeatherResponse(res, index, city);
+                    }
+                }
             }
 
         });
@@ -190,6 +178,7 @@ public class WeatherEngine {
 
     /**
      * 收藏城市
+     * 
      * @Title: markCity
      * @param city
      * @return void
@@ -201,6 +190,7 @@ public class WeatherEngine {
 
     /**
      * 获取收藏城市列表
+     * 
      * @Title: getMarkCity
      * @return
      * @return List<City>
@@ -209,15 +199,16 @@ public class WeatherEngine {
     public List<City> getMarkCity() {
         return mCache.getMarkedCities();
     }
-    
+
     /**
      * 删除收藏城市
+     * 
      * @Title: removeCity
      * @param city
      * @return void
      * @date 2014-3-30 上午9:46:51
      */
-    public void removeCity(City city){
+    public void removeCity(City city) {
         mCache.removeCity(city);
     }
 
@@ -237,4 +228,75 @@ public class WeatherEngine {
         return PreferenceManager.getDefaultSharedPreferences(mContext);
     }
 
+    private class Request implements Runnable {
+        int index;
+
+        @Override
+        public void run() {
+        }
+    }
+
+    private class RequestManager {
+        private int requestIndex = 1000;
+        private SparseArrayCompat<Request> requestList = new SparseArrayCompat<Request>();
+        private boolean isRequesting = false;
+
+        public synchronized int request(Request request) {
+            int index = requestIndex++;
+            request.index = index;
+            if (isRequesting) {
+                requestList.put(index, request);
+            } else {
+                changeRequestState(true);
+                startAsyncTask(request);
+            }
+
+            return index;
+        }
+
+        private void startAsyncTask(final Request request) {
+            new AsyncTask<Object, Object, Object>() {
+
+                @Override
+                protected Object doInBackground(Object... params) {
+                    int index = request.index;
+                    request.run();
+                    return index;
+                }
+
+                @Override
+                protected void onPostExecute(Object result) {
+                    super.onPostExecute(result);
+                    int index = (Integer) result;
+                    onRequestFinish(index);
+                }
+
+            }.execute("");
+        }
+
+        private void onRequestFinish(int index) {
+            if (requestList.size() == 0) {
+                changeRequestState(false);
+                return;
+            }
+
+            Request request = null;
+
+            do {
+                request = requestList.get(index++);
+            } while (request == null);
+
+            requestList.remove(request.index);
+            startAsyncTask(request);
+        }
+
+        private void changeRequestState(boolean request) {
+            isRequesting = request;
+            synchronized (mListeners) {
+                for (EngineListener listener : mListeners) {
+                    listener.onRequestStateChanged(isRequesting);
+                }
+            }
+        }
+    }
 }

@@ -26,7 +26,13 @@ public class CacheManager {
 	 * @date 2014-3-29 下午4:38:11
 	 */
 	public List<City> getMarkedCities(){
-		return getCityDao().findAll();
+	    List<City> list = getCityDao().findAll();
+	    if(list != null && list.size() > 0){
+	        for(City city : list){
+	            getCityWithWeather(city);
+	        }
+	    }
+		return list;
 	}
     
     /**
@@ -53,7 +59,6 @@ public class CacheManager {
      */
     public void markCity(City city){
         CityDao dao = getCityDao();
-        dao.delete(null, null);
         City cityMarked = getMarkedByCityIndex(city.index);
         if(cityMarked == null){
             dao.insert(city);
@@ -97,30 +102,31 @@ public class CacheManager {
 	 * @return City
 	 * @date 2014-3-29 下午4:40:19
 	 */
-	public City getCityWithWeather(City city) {
-	    if(city == null){
-	        return city;
-	    }
+    public City getCityWithWeather(City city) {
+        if (city == null) {
+            return city;
+        }
 
-		ArrayList<Weather> cachedWeathers = new ArrayList<Weather>();
-		@SuppressWarnings("unchecked")
-        List<Weather> allWeathers = (List<Weather>) getWeatherDao().findBy("city_index", city.index);
-		Calendar calNow = Calendar.getInstance();
-		if (allWeathers != null && allWeathers.size() > 0) {
-		    for(Weather weather : allWeathers){
-		        if(sameDay(weather.calendar, calNow)){
+        ArrayList<Weather> cachedWeathers = new ArrayList<Weather>();
+        @SuppressWarnings("unchecked")
+        List<Weather> allWeathers = (List<Weather>) getWeatherDao().find("city_index=?",
+                new String[] { city.index }, null, null, "`calendar` ASC");
+        Calendar calNow = Calendar.getInstance();
+        if (allWeathers != null && allWeathers.size() > 0) {
+            for (Weather weather : allWeathers) {
+                if (sameDay(weather.calendar, calNow)) {
                     cachedWeathers.add(weather);
                     calNow.add(Calendar.DAY_OF_MONTH, 1);
-		        }
-		    }
-		}
-		
-		if(cachedWeathers.size() > 1){
-			city.weathers = cachedWeathers;
-		}
+                }
+            }
+        }
 
-		return city;
-	}
+        if (cachedWeathers.size() > 1) {
+            city.weathers = cachedWeathers;
+        }
+
+        return city;
+    }
 	
 	private static boolean sameDay(Calendar a, Calendar b){
 		if(a.get(Calendar.DAY_OF_MONTH) == b.get(Calendar.DAY_OF_MONTH)

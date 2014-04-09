@@ -193,8 +193,8 @@ public class Weather extends BaseInfo implements Parcelable{
 	 * @return String[]
 	 * @date 2014-3-28 下午5:42:08
 	 */
-	public String[] getWeatherName(Context context){
-		return WeatherUtils.getWeather(context, weather);
+	public String[] getWeatherName(){
+		return WeatherUtils.getWeather(weather);
 	}
 	
 	/**
@@ -206,12 +206,12 @@ public class Weather extends BaseInfo implements Parcelable{
 	 * @return String
 	 * @date 2014-3-29 下午3:03:01
 	 */
-	public String getFormatWeatherName(Context context){
-	    String[] names = getWeatherName(context);
+	public String getFormatWeatherName(){
+	    String[] names = getWeatherName();
 	    StringBuilder sb = new StringBuilder(names[0]);
 	    if(names.length > 1){
 	        for(int i = 1; i < names.length; i++){
-	            sb.append(context.getString(R.string.weather_to));
+	            sb.append("转");
 	            sb.append(names[i]);
 	        }
 	    }
